@@ -52,7 +52,7 @@
                 android:clickable="true"
                 android:scaleType="center"
                 android:visibility="visible"
-                app:srcCompat="@drawable/ic_menu_black_24dp" />
+                app:srcCompat="@drawable/ic_menu_vector" />
 
             <TextView
                 android:id="@+id/mt_placeholder"
@@ -149,8 +149,8 @@
                 android:clickable="false"
                 android:padding="12dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_magnify_black_48dp"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_search_solid" />
 
             <View
                 android:id="@+id/mt_menu_divider"
