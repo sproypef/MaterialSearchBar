@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,7 +44,6 @@ import static android.content.ContentValues.TAG;
 
 /**
  * Created by mancj on 19.07.2016.
- *
  */
 public class MaterialSearchBar extends RelativeLayout implements View.OnClickListener,
         Animation.AnimationListener, SuggestionsAdapter.OnItemViewClickListener,
@@ -263,6 +263,49 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
     }
 
+    public void setIconCustom(Drawable drawable) {
+        ImageView iconCustom = (ImageView) findViewById(R.id.mt_custom);
+        iconCustom.setImageDrawable(drawable);
+        setIconCustomVisible(iconCustom);
+    }
+
+    public void setIconCustom(@DrawableRes int idRes) {
+        ImageView iconCustom = (ImageView) findViewById(R.id.mt_custom);
+        iconCustom.setImageResource(idRes);
+        setIconCustomVisible(iconCustom);
+    }
+
+    private void setIconCustomVisible(ImageView iconCustom) {
+        iconCustom.setVisibility(VISIBLE);
+        ImageView menuIcon = (ImageView) findViewById(R.id.mt_menu);
+        if (searchIcon.getVisibility() == VISIBLE && menuIcon.getVisibility() == GONE) {
+
+            RelativeLayout.LayoutParams params = (LayoutParams) searchIcon.getLayoutParams();
+            params.rightMargin = (int) (48 * destiny);
+            searchIcon.setLayoutParams(params);
+
+        } else if (searchIcon.getVisibility() == VISIBLE && menuIcon.getVisibility() == VISIBLE) {
+
+            RelativeLayout.LayoutParams params = (LayoutParams) searchIcon.getLayoutParams();
+            params.rightMargin = (int) (48 * 2 * destiny);
+            searchIcon.setLayoutParams(params);
+
+            RelativeLayout.LayoutParams paramsCt = (LayoutParams) iconCustom.getLayoutParams();
+            paramsCt.rightMargin = (int) (48 * destiny);
+            iconCustom.setLayoutParams(paramsCt);
+
+            RelativeLayout.LayoutParams paramsC = (LayoutParams) menuIcon.getLayoutParams();
+            paramsC.leftMargin = (int) (48 * destiny);
+            menuIcon.setLayoutParams(paramsC);
+
+        }
+    }
+
+    public void setIconCustomClickListener(OnClickListener onClickListener) {
+        ImageView iconCustom = (ImageView) findViewById(R.id.mt_custom);
+        iconCustom.setOnClickListener(onClickListener);
+    }
+
     /**
      * Get popup menu
      *
@@ -409,7 +452,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
     }
 
     private void setupIconRippleStyle() {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
             TypedValue rippleStyle = new TypedValue();
             if (borderlessRippleEnabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, rippleStyle, true);
@@ -421,7 +464,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             menuIcon.setBackgroundResource(rippleStyle.resourceId);
             arrowIcon.setBackgroundResource(rippleStyle.resourceId);
             clearIcon.setBackgroundResource(rippleStyle.resourceId);
-        }else{
+        } else {
             Log.w(TAG, "setupIconRippleStyle() Only Available On SDK Versions Higher Than 16!");
         }
     }
@@ -651,7 +694,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         this.placeholderText = placeholder;
         placeHolder.setText(placeholder);
     }
-            
+
     /**
      * Set the place holder text
      *
@@ -747,7 +790,8 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
      *
      * @param suggestions an array of queries
      */
-    public void updateLastSuggestions(List suggestions) {
+    @SuppressWarnings("unchecked")
+    public void updateLastSuggestions(List<String> suggestions) {
         int startHeight = getListHeight(false);
         if (suggestions.size() > 0) {
             List newSuggestions = new ArrayList<>(suggestions);
@@ -768,6 +812,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
      * @see #getLastSuggestions()
      * @see #setMaxSuggestionCount(int)
      */
+    @SuppressWarnings("unchecked")
     public void setLastSuggestions(List suggestions) {
         adapter.setSuggestions(suggestions);
     }
@@ -920,7 +965,11 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
             if (listenerExists())
                 onSearchActionListener.onButtonClicked(BUTTON_SPEECH);
         } else if (id == R.id.mt_clear) {
-            searchEdit.setText("");
+            if (searchEdit.getText().length() <= 0) {
+                disableSearch();
+            } else {
+                searchEdit.setText("");
+            }
         } else if (id == R.id.mt_menu) {
             popupMenu.show();
         } else if (id == R.id.mt_nav)
@@ -966,6 +1015,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (listenerExists())
@@ -997,6 +1047,7 @@ public class MaterialSearchBar extends RelativeLayout implements View.OnClickLis
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void OnItemDeleteListener(int position, View v) {
         if (v.getTag() instanceof String) {

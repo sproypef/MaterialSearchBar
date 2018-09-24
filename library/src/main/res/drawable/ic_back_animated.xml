@@ -1,7 +1,9 @@
 <!--Back To Menu Animation -->
 <animated-vector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/ic_back_vector">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:drawable="@drawable/ic_back_vector"
+    tools:ignore="NewApi">
     <target
         android:name="back"
         android:animation="@animator/back_to_menu_morph"/>
